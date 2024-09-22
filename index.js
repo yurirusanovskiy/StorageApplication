@@ -24,7 +24,8 @@ async function showMenu() {
     9. Fix Tool
     10. View Used Tools
     11. Build Something
-    12. Exit
+    12. Add to tool or material amount
+    13. Exit
   `);
 }
 
@@ -214,9 +215,48 @@ async function handleMenuSelection(option) {
         }
       });
     });
-    break;                  
+    break;
+    
+    case '12': // Add to tool or material amount
+    rl.question('Enter item type (Tool or Material), name, and amount to add (e.g., Tool, Hammer, 5): ', async (input) => {
+      await handleError(async () => {
+        const parts = input.split(',').map(part => part.trim());
+        const itemType = parts[0]; // Tool or Material
+        const itemName = parts[1]; // Name of the tool or material
+        const additionalAmount = parseInt(parts[2], 10); // Amount to add
+        
+        if (isNaN(additionalAmount) || additionalAmount <= 0) {
+          console.log('Invalid amount. Please provide a positive number.');
+          return;
+        }
 
-    case '12': // Exit
+        // We get the correct model depending on the element type
+        const Model = itemType === 'Tool' ? Tool : itemType === 'Material' ? Material : null;
+
+        if (!Model) {
+          console.log('Invalid item type. Please enter "Tool" or "Material".');
+          return;
+        }
+
+        // Search for a tool or material by name, case sensitive
+        const foundItem = await Model.findOne({ name: { $regex: new RegExp(`^${itemName}$`, 'i') } }).exec();
+
+        if (!foundItem) {
+          console.log(`${itemType} with name "${itemName}" not found.`);
+          return;
+        }
+
+        // Add quantity using newArrival method
+        const newAmount = foundItem.newArrival(additionalAmount);
+        await foundItem.save();
+
+        console.log(`Updated ${itemType}: ${itemName}, new amount: ${newAmount}`);
+      });
+    });
+    break;
+
+
+    case '13': // Exit
       await disconnectDB();
       rl.close();
       console.log('Exiting the application...');
