@@ -1,0 +1,12 @@
+StorageApplication/
+├── index.js                  // Main application file
+├── models/                   // Database models
+│   ├── item.js               // Basic model of the item
+│   ├── tool.js               // Tool model
+│   ├── material.js           // Material model
+│   └── user.js               // User model
+├── controllers/              // Controllers for logic processing
+│   └── itemControllers.js    // Logic for working with objects
+├── utils/                    // Utilities
+│   └── db.js                 // Connecting to a database
+└── README.md                 // Project documentation
