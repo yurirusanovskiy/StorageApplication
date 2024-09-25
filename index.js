@@ -1,4 +1,5 @@
 const readline = require('readline');
+require('dotenv').config();
 const { connectDB, disconnectDB } = require('./utils/db');
 const { createItem, getItems, updateItem, updateInventory, deleteItem } = require('./controllers/itemController');
 const User = require('./models/user');
@@ -264,7 +265,7 @@ async function handleMenuSelection(option) {
       break;
 
     default:
-      console.log('Invalid option. Please select a number between 1 and 12.');
+      console.log('Invalid option. Please select a number between 1 and 13.');
       await promptUser();
       break;
   }
